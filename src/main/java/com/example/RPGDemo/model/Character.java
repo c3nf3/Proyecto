@@ -12,10 +12,10 @@ public class Character {
     @GeneratedValue
     private Long id;
     private String name;
-    private int life;
-    private int attack;
-    private int defense;
-    private int level;
+    private Integer life;
+    private Integer attack;
+    private Integer defense;
+    private Integer level;
 
     @Enumerated(EnumType.STRING)
     private Type type;

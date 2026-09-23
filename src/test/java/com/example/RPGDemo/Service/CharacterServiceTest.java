@@ -17,6 +17,7 @@ public class CharacterServiceTest {
         var repository = Mockito.mock(CharacterRepository.class);
         var service = new CharacterService(repository);
         var player = new Character();
+        player.setName("Aragon");
 
         service.initializeCharacter(player);
 
@@ -31,8 +32,11 @@ public class CharacterServiceTest {
         var player = new Character();
         player.setName("");
 
+        var repository = Mockito.mock(CharacterRepository.class);
+        var  service = new CharacterService(repository);
+
         assertThrows(IllegalArgumentException.class,
-                () -> new CharacterService(null).initializeCharacter(player));
+                () -> service.initializeCharacter(player));
     }
 
     @Test
@@ -49,14 +53,12 @@ public class CharacterServiceTest {
     void shouldNotUpdateNonExistingCharacter() {
         var character = new Character();
         character.setId(999L);
-        character.setName("Unknown");
 
         var repository = Mockito.mock(CharacterRepository.class);
+        var service = new CharacterService(repository);
 
         Mockito.when(repository.findById(999L))
                 .thenReturn(java.util.Optional.empty());
-
-        var service = new CharacterService(repository);
 
         assertThrows(EntityNotFoundException.class,
                 () -> service.updateCharacter(character));

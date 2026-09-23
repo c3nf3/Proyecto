@@ -13,6 +13,18 @@ public class CharacterService {
     private final CharacterRepository characterRepository;
 
     public void initializeCharacter(Character character){
+
+        if (character.getName() == null || character.getName().isBlank()) {
+            throw new IllegalArgumentException("Name is required");
+        }
+
+        if ((character.getLife() != null && character.getLife() < 0) ||
+                (character.getAttack() != null && character.getAttack() < 0) ||
+                (character.getDefense() != null && character.getDefense() < 0) ||
+                (character.getLevel() != null && character.getLevel() < 0)) {
+            throw new IllegalArgumentException("Stats cannot be negative");
+        }
+
         character.setLife(100);
         character.setAttack(10);
         character.setDefense(5);
@@ -26,6 +38,7 @@ public class CharacterService {
     }
 
     public List<Character> findAllCharacters(){
+
         return characterRepository.findAll();
     }
 
@@ -35,13 +48,21 @@ public class CharacterService {
     }
 
     public void deleteCharacterById(Long id){
+        if (!characterRepository.existsById(id)) {
+            throw new EntityNotFoundException("Character not found " + id);
+        }
         characterRepository.deleteById(id);
     }
 
     public Character updateCharacter(Character character){
         var existing = findCharacterById(character.getId());
+
+        if (character.getName() == null || character.getName().isBlank()) {
+            throw new IllegalArgumentException("Name is required");
+        }
+
         existing.setName(character.getName());
-        existing.setType(character.getType());
-        return characterRepository.save(character);
+
+        return characterRepository.save(existing);
     }
 }
